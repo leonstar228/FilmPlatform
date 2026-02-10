@@ -1,0 +1,113 @@
+﻿@model List<MovieLibrary.Models.Movie>
+@{
+    ViewData["Title"] = "Каталог";
+    var userMovieIds = ViewData["UserMovieIds"] as List<int> ?? new List<int>();
+}
+
+<h1 class="mb-4"><i class="bi bi-collection-play text-danger"></i> Каталог</h1>
+
+<!-- Фільтри -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Пошук за назвою..." value="@ViewData["Search"]">
+            </div>
+            <div class="col-md-4">
+                <select name="type" class="form-select">
+                    <option value="">Всі типи</option>
+                    <option value="@MovieLibrary.Models.MediaType.Movie" 
+                            selected="@(ViewData["Type"]?.ToString() == "Movie")">Фільми</option>
+                    <option value="@MovieLibrary.Models.MediaType.Series"
+                            selected="@(ViewData["Type"]?.ToString() == "Series")">Серіали</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-accent w-100">
+                    <i class="bi bi-search"></i> Шукати
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Фільмів не знайдено
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var movie in Model)
+        {
+            var isInLibrary = userMovieIds.Contains(movie.Id);
+            <div class="col">
+                <div class="card h-100">
+                    @if (!string.IsNullOrEmpty(movie.PosterUrl))
+                    {
+                        <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title" 
+                             style="height: 200px; object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="card-img-top poster-placeholder" style="height: 200px;">
+                            <i class="bi bi-film"></i>
+                        </div>
+                    }
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">@movie.Title</h5>
+                            <span class="badge @(movie.Type == MovieLibrary.Models.MediaType.Movie ? "badge-movie" : "badge-series")">
+                                @(movie.Type == MovieLibrary.Models.MediaType.Movie ? "Фільм" : "Серіал")
+                            </span>
+                        </div>
+                        <p class="card-text text-muted small mb-2">
+                            @movie.Year • @movie.Genre
+                        </p>
+                        @if (!string.IsNullOrEmpty(movie.Description))
+                        {
+                            <p class="card-text small">
+                                @(movie.Description.Length > 100 ? movie.Description.Substring(0, 100) + "..." : movie.Description)
+                            </p>
+                        }
+                        @if (movie.Rating.HasValue)
+                        {
+                            <p class="mb-0">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <strong>@movie.Rating.Value.ToString("F1")</strong>
+                            </p>
+                        }
+                    </div>
+                    <div class="card-footer bg-transparent border-0">
+                        <div class="d-flex gap-2">
+                            <a asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id" 
+                               class="btn 
+                               flex-grow-1">
+                                <i class="bi bi-eye"></i> Деталі
+                            </a>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @if (isInLibrary)
+                                {
+                                    <span class="btn btn-success disabled">
+                                        <i class="bi bi-check-lg"></i>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Library" asp-action="Add" asp-route-id="@movie.Id" 
+                                       class="btn btn-accent">
+                                        <i class="bi bi-plus-lg"></i>
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

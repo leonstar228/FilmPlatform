@@ -1,0 +1,45 @@
+﻿@model MovieLibrary.ViewModels.Profile.EditProfileViewModel
+@{
+    ViewData["Title"] = "Редагувати профіль";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="mb-4">
+                    <i class="bi bi-person-gear text-danger"></i> Редагувати профіль
+                </h2>
+                
+                <form asp-action="Edit" method="post">
+                    <div class="mb-3">
+                        <label asp-for="DisplayName" class="form-label"></label>
+                        <input asp-for="DisplayName" class="form-control">
+                        <span asp-validation-for="DisplayName" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="AvatarUrl" class="form-label"></label>
+                        <input asp-for="AvatarUrl" class="form-control" 
+                               placeholder="https://example.com/avatar.jpg">
+                        <span asp-validation-for="AvatarUrl" class="text-danger small"></span>
+                        <small class="text-muted">Вставте URL зображення</small>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-accent">
+                            <i class="bi bi-check-lg"></i> Зберегти
+                        </button>
+                        <a asp-action="Index" class="btn btn-light">
+                            Скасувати
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

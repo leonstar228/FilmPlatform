@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Identity;
+
+namespace MovieLibrary.Models;
+
+public class ApplicationUser : IdentityUser
+{
+     public string? DisplayName { get; set; }
+     public string? AvatarUrl { get; set; }
+     public DateTime RegisteredAt { get; set; }
+     
+     public ICollection<UserMovie>  UserMovies { get; set; } = new List<UserMovie>();
+}

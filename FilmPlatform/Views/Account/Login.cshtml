@@ -1,0 +1,51 @@
+﻿@model MovieLibrary.ViewModels.Account.LoginViewModel
+@{
+    ViewData["Title"] = "Вхід";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-body p-4">
+                <h2 class="text-center mb-4">
+                    <i class="bi bi-box-arrow-in-right text-danger"></i> Вхід
+                </h2>
+                
+                <form asp-action="Login" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]">
+                    
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="email@example.com">
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label"></label>
+                        <input asp-for="Password" class="form-control" placeholder="Ваш пароль">
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    
+                    <div class="mb-4 form-check">
+                        <input asp-for="RememberMe" class="form-check-input">
+                        <label asp-for="RememberMe" class="form-check-label"></label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-accent w-100 mb-3">
+                        <i class="bi bi-box-arrow-in-right"></i> Увійти
+                    </button>
+                    
+                    <p class="text-center text-muted mb-0">
+                        Немає акаунту? 
+                        <a asp-action="Register" class="text-danger">Зареєструватися</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

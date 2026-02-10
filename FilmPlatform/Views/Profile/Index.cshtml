@@ -1,0 +1,86 @@
+﻿@model MovieLibrary.ViewModels.Profile.ProfileViewModel
+@{
+    ViewData["Title"] = "Профіль";
+}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card text-center">
+            <div class="card-body p-4">
+                @if (!string.IsNullOrEmpty(Model.AvatarUrl))
+                {
+                    <img src="@Model.AvatarUrl" class="rounded-circle mb-3" 
+                         style="width: 120px; height: 120px; object-fit: cover;">
+                }
+                else
+                {
+                    <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" 
+                         style="width: 120px; height: 120px;">
+                        <i class="bi bi-person-fill display-4"></i>
+                    </div>
+                }
+                <h3>@Model.DisplayName</h3>
+                <p class="text-muted">@Model.Email</p>
+                <p class="small text-muted">
+                    <i class="bi bi-calendar"></i> Зареєстровано: @Model.RegisteredAt.ToString("dd.MM.yyyy")
+                </p>
+                <a asp-action="Edit" class="btn btn-accent">
+                    <i class="bi bi-pencil"></i> Редагувати
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Статистика</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 col-md-3 mb-3">
+                        <div class="h2 text-primary mb-0">@Model.TotalMovies</div>
+                        <small class="text-muted">Фільмів</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3">
+                        <div class="h2 text-success mb-0">@Model.TotalSeries</div>
+                        <small class="text-muted">Серіалів</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3">
+                        <div class="h2 text-warning mb-0">@Model.Watching</div>
+                        <small class="text-muted">Дивлюся</small>
+                    </div>
+                    <div class="col-6 col-md-3 mb-3">
+                        <div class="h2 text-info mb-0">@Model.Completed</div>
+                        <small class="text-muted">Переглянуто</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <a asp-controller="Library" asp-action="Index" 
+                   asp-route-status="@MovieLibrary.Models.WatchStatus.Watching" 
+                   class="card text-decoration-none h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-play-circle display-4 text-warning"></i>
+                        <h5 class="mt-2">Зараз дивлюся</h5>
+                        <p class="text-muted mb-0">@Model.Watching шт.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-6 mb-3">
+                <a asp-controller="Library" asp-action="Index" 
+                   asp-route-status="@MovieLibrary.Models.WatchStatus.PlanToWatch" 
+                   class="card text-decoration-none h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-clock display-4 text-primary"></i>
+                        <h5 class="mt-2">Заплановано</h5>
+                        <p class="text-muted mb-0">@Model.PlanToWatch шт.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

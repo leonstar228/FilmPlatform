@@ -1,0 +1,115 @@
+﻿@model MovieLibrary.Models.Movie
+@{
+    ViewData["Title"] = Model.Title;
+    var userMovie = ViewData["UserMovie"] as MovieLibrary.Models.UserMovie;
+}
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        @if (!string.IsNullOrEmpty(Model.PosterUrl))
+        {
+            <img src="@Model.PosterUrl" class="img-fluid rounded shadow" alt="@Model.Title">
+        }
+        else
+        {
+            <div class="poster-placeholder rounded" style="height: 400px;">
+                <i class="bi bi-film"></i>
+            </div>
+        }
+    </div>
+    <div class="col-md-8">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            <h1 class="mb-0">@Model.Title</h1>
+            <span class="badge fs-6 @(Model.Type == MovieLibrary.Models.MediaType.Movie ? "badge-movie" : "badge-series")">
+                @(Model.Type == MovieLibrary.Models.MediaType.Movie ? "Фільм" : "Серіал")
+            </span>
+        </div>
+        
+        <div class="mb-4">
+            @if (Model.Year.HasValue)
+            {
+                <span class="me-3"><i class="bi bi-calendar"></i> @Model.Year</span>
+            }
+            @if (!string.IsNullOrEmpty(Model.Genre))
+            {
+                <span class="me-3"><i class="bi bi-tag"></i> @Model.Genre</span>
+            }
+            @if (Model.Rating.HasValue)
+            {
+                <span><i class="bi bi-star-fill text-warning"></i> @Model.Rating.Value.ToString("F1")</span>
+            }
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.Description))
+        {
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5><i class="bi bi-text-paragraph"></i> Опис</h5>
+                    <p class="mb-0">@Model.Description</p>
+                </div>
+            </div>
+        }
+        
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <div class="card">
+                <div class="card-body">
+                    @if (userMovie != null)
+                    {
+                        <h5 class="text-success"><i class="bi bi-check-circle"></i> У вашій бібліотеці</h5>
+                        <p class="mb-2">
+                            Статус: 
+                            <span class="badge status-@userMovie.Status.ToString().ToLower()">
+                                @GetStatusName(userMovie.Status)
+                            </span>
+                        </p>
+                        @if (userMovie.UserRating.HasValue)
+                        {
+                            <p class="mb-2">Ваша оцінка: <strong>@userMovie.UserRating/10</strong></p>
+                        }
+                        <a asp-controller="Library" asp-action="Edit" asp-route-id="@userMovie.Id" 
+                           class="btn btn-accent">
+                            <i class="bi bi-pencil"></i> Редагувати
+                        </a>
+                    }
+                    else
+                    {
+                        <h5><i class="bi bi-bookmark-plus"></i> Додати до бібліотеки</h5>
+                        <a asp-controller="Library" asp-action="Add" asp-route-id="@Model.Id" 
+                           class="btn btn-accent">
+                            <i class="bi bi-plus-lg"></i> Додати
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                <a asp-controller="Account" asp-action="Login" class="alert-link">Увійдіть</a>, 
+                щоб додати до своєї бібліотеки
+            </div>
+        }
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-controller="Movies" asp-action="Index" class="btn btn-light">
+        <i class="bi bi-arrow-left"></i> Назад до каталогу
+    </a>
+</div>
+
+@functions {
+    string GetStatusName(MovieLibrary.Models.WatchStatus status)
+    {
+        return status switch
+        {
+            MovieLibrary.Models.WatchStatus.PlanToWatch => "Переглянути пізніше",
+            MovieLibrary.Models.WatchStatus.Watching => "Дивлюся",
+            MovieLibrary.Models.WatchStatus.Completed => "Переглянуто",
+            MovieLibrary.Models.WatchStatus.OnHold => "На паузі",
+            MovieLibrary.Models.WatchStatus.Dropped => "Кинув",
+            _ => status.ToString()
+        };
+    }
+}
