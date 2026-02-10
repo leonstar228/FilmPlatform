@@ -541,6 +541,14 @@
             ::-webkit-scrollbar-thumb:hover {
                 background: var(--accent-hover);
             }
+        footer{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        footer li{
+            list-style: none;
+        }
     </style>
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -626,7 +634,15 @@
         @RenderBody()
     </main>
 
-    <footer class="py-3 mt-auto">
+        <footer class="py-3 mt-auto">
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link text-warning" asp-controller="Admin" asp-action="Index">
+                    🛠 Адмін
+                </a>
+            </li>
+        }
         <div class="container text-center text-muted">
             <small>&copy; 2026 MovieLibrary. Створено з ❤️</small>
         </div>

@@ -1,0 +1,13 @@
+﻿@model MovieLibrary.Models.Movie
+
+<h2 class="text-danger">Видалити фільм</h2>
+
+<div class="alert alert-danger">
+    Ти впевнений, що хочеш видалити <strong>@Model.Title</strong>?
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Так, видалити</button>
+    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+</form>
